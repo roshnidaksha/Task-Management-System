@@ -1,25 +1,23 @@
 import React from "react";
+import { BrowserRouter, Routes, Route} from "react-router-dom"
+import Navbar from "./components/navbar.tsx";
+import Login from "./pages/loginPage.tsx";
+import Signup from "./pages/signupPage.tsx";
+import Main from "./pages/mainPage.tsx";
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  const [data, setData] = React.useState(null);
-
-  React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
+const App = () => {
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          {!data ? "Loading..." : data}
-        </p>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<Main />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

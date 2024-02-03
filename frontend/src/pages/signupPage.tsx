@@ -116,7 +116,7 @@ const Signup = () => {
 
                     <Grid container justifyContent={"flex-end"}>
                         <Grid item>
-                            <Link to="/loginPage">Already have an accout? Login</Link>
+                            <Link to="/login">Already have an accout? Login</Link>
                         </Grid>
                     </Grid>
                 </Box>

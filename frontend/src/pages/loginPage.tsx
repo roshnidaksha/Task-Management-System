@@ -110,7 +110,7 @@ const Login = () => {
 
                     <Grid container justifyContent={"flex-end"}>
                         <Grid item>
-                            <Link to="/signupPage">Don't have an accout? Click to SignUp</Link>
+                            <Link to="/signup">Don't have an accout? Click to SignUp</Link>
                         </Grid>
                     </Grid>
                 </Box>
