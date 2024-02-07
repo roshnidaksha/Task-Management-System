@@ -1,6 +1,8 @@
 import * as React from "react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppDispatch } from "../hooks/redux-hooks.ts";
+import { register } from "../slices/authSlice.ts";
 import { LockOutlined } from "@mui/icons-material";
 import {
   Container,
@@ -14,10 +16,10 @@ import {
 } from "@mui/material";
 
 const Signup = () => {
+    const dispatch = useAppDispatch();
+    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
-    const handleSignup = async () => {};
 
     const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(event.target.value);
@@ -47,6 +49,26 @@ const Signup = () => {
         } else {
             setIsInvalidPassword(false);
             return false;
+        }
+    };
+
+    const handleSignup = async () => {
+        const isInvalidUsername = checkInvalidUsername();
+        const isInvalidPassword = checkInvalidPassword();
+
+        if (isInvalidPassword || isInvalidUsername) {
+            console.error("Invalid username / password");
+        } else {
+            try {
+                await dispatch(
+                register({
+                    username,
+                    password,
+                })
+                ).unwrap();
+            } catch (e) {
+                console.error(e);
+            }
         }
     };
 

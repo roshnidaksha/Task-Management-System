@@ -1,12 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks.ts";
+import { getUser, logout } from "../slices/authSlice.ts";
 
 const Navbar = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
+    const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
+
+    useEffect(() => {
+        if (basicUserInfo) {
+            dispatch(getUser(basicUserInfo.id));
+        }
+    }, [basicUserInfo]);
+
+    const handleLogout = async () => {
+        try {
+            await dispatch(logout()).unwrap();
+            navigate("/login");
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     function handleLogin() {
         navigate("/login");
     }
@@ -40,6 +62,7 @@ const Navbar = () => {
                     <div className={"hidden md: block"}>
                         <Typography className={"text-white"}>
                             Welcome
+                            Username: {userProfileInfo?.username}
                         </Typography>
                     </div>
                 </div>
@@ -47,6 +70,12 @@ const Navbar = () => {
                 <Button color="inherit" onClick={handleLogin}>
                     <Typography className={"text-white"}>
                         Login
+                    </Typography>
+                </Button>
+
+                <Button color="inherit" onClick={handleLogout}>
+                    <Typography className={"text-white"}>
+                        Logout
                     </Typography>
                 </Button>
             </Toolbar>
