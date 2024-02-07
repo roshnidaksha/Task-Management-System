@@ -4,7 +4,6 @@ import Navbar from "./components/navbar.tsx";
 import Login from "./pages/loginPage.tsx";
 import Signup from "./pages/signupPage.tsx";
 import Main from "./pages/mainPage.tsx";
-import logo from './logo.svg';
 import './App.css';
 
 const App = () => {
