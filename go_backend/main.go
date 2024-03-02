@@ -1,25 +1,24 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
-	
-
-	"github.com/go-chi/chi"
+	"go_backend/routers"
 )
 
 const port = ":3001"
 
 func main() {
-	r := chi.NewRouter()
-
-	// Serve static files from the 'client/build' directory
-	r.Handle("/*", http.FileServer(http.Dir("./client/build")))
+	r := router.SetupRouter()
 
 	// Handle GET requests to the '/api' route
-	r.Get("/api", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"message": "Hello from server!"}`))
-	})
+		json.NewEncoder(w).Encode(map[string]string{"message": "Hello from server!"})
+	}).Methods("GET")
+
+	// Run the server
+	http.Handle("/", r)
 
 	// Start the server
 	http.ListenAndServe(port, r)
