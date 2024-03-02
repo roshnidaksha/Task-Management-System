@@ -51,7 +51,7 @@ func GetDB() *sql.DB {
 }
 
 // Close closes the database connection.
-func Close() {
+func CloseDB() {
     if db != nil {
         db.Close()
     }

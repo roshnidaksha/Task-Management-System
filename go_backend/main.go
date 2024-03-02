@@ -1,25 +1,27 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 	"go_backend/routers"
+	"go_backend/database"
+	"github.com/gorilla/handlers"
 )
 
 const port = ":3001"
 
 func main() {
+	database.InitDB()
+	defer database.CloseDB()
+	
 	r := router.SetupRouter()
 
-	// Handle GET requests to the '/api' route
-	r.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"message": "Hello from server!"})
-	}).Methods("GET")
+	headers := handlers.AllowedHeaders([]string{"Content-Type"})
+    methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+    origins := handlers.AllowedOrigins([]string{"http://localhost:3000"})
 
 	// Run the server
 	http.Handle("/", r)
 
 	// Start the server
-	http.ListenAndServe(port, r)
+	http.ListenAndServe(port, handlers.CORS(headers, methods, origins)(r))
 }

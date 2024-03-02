@@ -14,6 +14,7 @@ import (
 )
 
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	godotenv.Load(".env")
 	usersTable := os.Getenv("DB_USERS_TABLE")
 	if usersTable == "" {

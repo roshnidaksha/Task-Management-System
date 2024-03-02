@@ -1,8 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux-hooks.ts";
-import { register } from "../slices/authSlice.ts";
+import { Link, useNavigate } from "react-router-dom";
 import { LockOutlined } from "@mui/icons-material";
 import {
   Container,
@@ -16,7 +14,7 @@ import {
 } from "@mui/material";
 
 const Signup = () => {
-    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -60,7 +58,7 @@ const Signup = () => {
             console.error("Invalid username / password");
         } else {
             try {
-                const response = await fetch('/signup', {
+                const response = await fetch("http://localhost:3001/api/signup", {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
@@ -71,6 +69,7 @@ const Signup = () => {
                 if (response.ok) {
                     const responseData = await response.json();
                     console.log(responseData); // handle success
+                    navigate("/");
                 } else {
                     console.error(`Error: ${response.status}`);
                 }
