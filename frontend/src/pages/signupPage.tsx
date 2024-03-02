@@ -60,12 +60,20 @@ const Signup = () => {
             console.error("Invalid username / password");
         } else {
             try {
-                await dispatch(
-                register({
-                    username,
-                    password,
-                })
-                ).unwrap();
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+            
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log(responseData); // handle success
+                } else {
+                    console.error(`Error: ${response.status}`);
+                }
             } catch (e) {
                 console.error(e);
             }
