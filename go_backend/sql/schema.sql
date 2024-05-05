@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(64) PRIMARY KEY,
     password TEXT NOT NULL
 );

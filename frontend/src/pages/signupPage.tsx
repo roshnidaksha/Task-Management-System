@@ -59,7 +59,7 @@ const Signup = () => {
         } else {
             try {
                 const response = await fetch("http://localhost:3001/api/signup", {
-                    method: 'POST',
+                    method: "POST",
                     headers: {
                       'Content-Type': 'application/json',
                     },

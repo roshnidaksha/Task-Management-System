@@ -2,11 +2,13 @@ package database
 
 import (
 	"database/sql"
+	//"net/http"
 	"fmt"
 	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	//"golang.org/x/crypto/bcrypt"
 	"github.com/joho/godotenv"
 )
 
@@ -40,6 +42,7 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("Error pinging the database:", err)
 	}
+	log.Println("Successfully connected to database")
 
 	// Set the global 'db' variable
 	db = database

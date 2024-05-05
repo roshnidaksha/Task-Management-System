@@ -10,10 +10,13 @@ import (
 	"go_backend/database"
 	"go_backend/utils"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
 
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
+	var db = database.GetDB();
+
 	w.Header().Set("Content-Type", "application/json")
 	godotenv.Load(".env")
 	usersTable := os.Getenv("DB_USERS_TABLE")
@@ -38,8 +41,12 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Construct and execute SQL query to insert new user
-	query := fmt.Sprintf("INSERT INTO %s (username, password) VALUES ($1, $2)", usersTable)
-	_, err = database.GetDB().Exec(query, username, "normal")
+	query, err := db.Prepare("INSERT INTO user (username, password) VALUES (?, ?)")
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
+		return
+	}
+	_, err = query.Exec(username, password)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
 		return

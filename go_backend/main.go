@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"go_backend/routers"
 	"go_backend/database"
@@ -20,8 +21,9 @@ func main() {
     origins := handlers.AllowedOrigins([]string{"http://localhost:3000"})
 
 	// Run the server
-	http.Handle("/", r)
+	//http.Handle("/", r)
 
 	// Start the server
+	log.Printf("Server is listening on port %s...", port)
 	http.ListenAndServe(port, handlers.CORS(headers, methods, origins)(r))
 }
