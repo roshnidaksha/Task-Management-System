@@ -1,9 +1,11 @@
 import React from "react";
 import '../App.css';
 import logo from '../logo.svg';
+import { useAuth } from "../contexts/AuthContext.tsx"
 
-function Home() {
+const Home = () => {
     const [data, setData] = React.useState(null);
+    const auth = useAuth();
 
     React.useEffect(() => {
         fetch("/api")
@@ -14,6 +16,18 @@ function Home() {
     return (
         <div className="App">
             <header className="App-header">
+                {!auth.isLogin && (
+                <p>
+                    Welcome to the Innovation Hub
+                </p>
+                )}
+                    
+                {auth.isLogin && (
+                <p>
+                    Welcome {auth.user}
+                </p>
+                )}
+
                 <img src={logo} className="App-logo" alt="logo" />
                 <p>
                     {!data ? "Loading..." : data}

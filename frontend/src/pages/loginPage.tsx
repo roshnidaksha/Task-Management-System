@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux-hooks.ts";
-import { login } from "../slices/authSlice.ts";
+import { Link, useNavigate } from "react-router-dom";
 import { LockOutlined } from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext.tsx"
 import {
   Container,
   CssBaseline,
@@ -16,16 +15,17 @@ import {
 } from "@mui/material";
 
 const Login = () => {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const auth = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
+
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
-    
+
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
@@ -53,7 +53,7 @@ const Login = () => {
     }
   };
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     const isInvalidUsername = checkInvalidUsername();
     const isInvalidPassword = checkInvalidPassword();
 
@@ -61,12 +61,24 @@ const Login = () => {
       console.error("Invalid username / password");
     } else {
       try {
-        await dispatch(
-          login({
-            username,
-            password,
-          })
-        ).unwrap();
+        const response = await fetch("http://localhost:3001/api/login", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log(responseData); // handle success
+          auth.toggleStatus(true);
+          auth.updateUsername(username);
+          auth.updatePassword(password);
+          navigate("/");
+        } else {
+          console.error(`Error: ${response.status}`);
+        }
       } catch (e) {
         console.error(e);
       }
@@ -85,13 +97,13 @@ const Login = () => {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{m: 1, bgcolor: "primary.light"}}>
+          <Avatar sx={{ m: 1, bgcolor: "primary.light" }}>
             <LockOutlined />
           </Avatar>
 
           <Typography variant="h5">Login</Typography>
 
-          <Box sx={{mt: 1}}>
+          <Box sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -105,7 +117,7 @@ const Login = () => {
               onChange={handleUsernameChange}
               error={isInvalidUsername}
               helperText={"Username must be between 1 and 30 characters and cannot contain spaces"}
-            />                        
+            />
 
             <TextField
               margin="normal"
@@ -120,16 +132,16 @@ const Login = () => {
               onChange={handlePasswordChange}
               error={isInvalidPassword}
               helperText={"Password must be at least 6 characters long"}
-            />                        
+            />
 
             <Button
               fullWidth
               variant="contained"
-              sx={{mt: 3, mb: 2}}
+              sx={{ mt: 3, mb: 2 }}
               onClick={handleLogin}
             >
               Login
-            </Button>        
+            </Button>
 
             <Grid container justifyContent={"flex-end"}>
               <Grid item>

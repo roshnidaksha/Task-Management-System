@@ -1,33 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Box from '@mui/material/Box';
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks.ts";
-import { getUser, logout } from "../slices/authSlice.ts";
+import { useAuth } from "../contexts/AuthContext.tsx"
 
+// Navbar component to be displayed at the top at all times
 const Navbar = () => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const [isLogin, setIsLogin] = useState(false);
-
-    const basicUserInfo = useAppSelector((state) => state.auth.basicUserInfo);
-    const userProfileInfo = useAppSelector((state) => state.auth.userProfileData);
-
-    useEffect(() => {
-        if (basicUserInfo) {
-            dispatch(getUser(basicUserInfo.id));
-        }
-    }, [basicUserInfo]);
+    const auth = useAuth();
 
     const handleLogout = async () => {
-        try {
-            await dispatch(logout()).unwrap();
-            navigate("/login");
-        } catch (e) {
-            console.error(e);
-        }
+        auth.logout();
+        navigate("/");
     };
 
     function handleLogin() {
@@ -39,54 +26,46 @@ const Navbar = () => {
     }
 
     return (
-        <AppBar position="static" className={"px-0 md: px-4"}>
+        <AppBar position="static">
             <Toolbar>
-                <div>
-                    <Link to={"/"} className={"no-underline"}>
-                        <Typography variant="h6" className={"text-White"}>
+                <Box sx={{ flexGrow: 1 }}>
+                    <Button component={Link} to={"/"} color="inherit">
+                        <Typography sx={{ mr: 2, fontWeight: 700 }}>
                             Innovation Hub
                         </Typography>
-                    </Link>
-                </div>
-
-                <div className={"flex-grow"} />
-
-                {!isLogin && (
-                <div className={"mr-4"}>
-                    <Button color="inherit" onClick={handleSignup}>
-                        <Typography className={"text-white"}>
-                            Sign Up
-                        </Typography>
                     </Button>
-                </div>
+                </Box>
+
+                {!auth.isLogin && (
+                <Button color="inherit" onClick={handleSignup} sx={{ mr: 2 }}>
+                    <Typography component="div">
+                        Sign Up
+                    </Typography>
+                </Button>
                 )}
 
-                {isLogin && (
-                <div className={"mr-2 flex min-w-[30px] items-center gap-2 md:mr-6"}>
-                    <div className={"hidden md: block"}>
-                        <Typography className={"text-white"}>
-                            Welcome
-                            Username: {userProfileInfo?.username}
-                        </Typography>
-                    </div>
-                </div>
-                )}
-
-                {!isLogin && (
-                <Button color="inherit" onClick={handleLogin}>
-                    <Typography className={"text-white"}>
+                {!auth.isLogin && (
+                <Button color="inherit" onClick={handleLogin} sx={{ mr: 2 }}>
+                    <Typography component="div">
                         Login
                     </Typography>
                 </Button>
                 )}
 
-                {isLogin && (
-                <Button color="inherit" onClick={handleLogout}>
-                    <Typography className={"text-white"}>
+                {auth.isLogin && (
+                <Button color="inherit" onClick={handleLogout} sx={{ mr: 2 }}>
+                    <Typography component="div">
                         Logout
                     </Typography>
                 </Button>
                 )}
+
+                {auth.isLogin && (
+                <Typography >
+                    Welcome {auth.user}
+                </Typography>
+                )}
+
             </Toolbar>
         </AppBar>
     );
