@@ -6,6 +6,7 @@ import {
   Container,
   CssBaseline,
   Box,
+  Alert,
   Avatar,
   Typography,
   TextField,
@@ -29,6 +30,8 @@ const Signup = () => {
 
     const [isInvalidUsername, setIsInvalidUsername] = useState(false);
     const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const checkInvalidUsername = () => {
         if (username.length < 1 || username.length > 30 || username.includes(" ")) {
@@ -41,7 +44,7 @@ const Signup = () => {
     };
 
     const checkInvalidPassword = () => {
-        if (password.length < 6) {
+        if (password.length < 6 || password.includes(" ")) {
             setIsInvalidPassword(true);
             return true;
         } else {
@@ -51,11 +54,15 @@ const Signup = () => {
     };
 
     const handleSignup = async () => {
+        setIsError(false);
+        setErrorMessage("");
+
         const isInvalidUsername = checkInvalidUsername();
         const isInvalidPassword = checkInvalidPassword();
 
         if (isInvalidPassword || isInvalidUsername) {
-            console.error("Invalid username / password");
+            setIsError(true);
+            setErrorMessage("Invalid username / password");
         } else {
             try {
                 const response = await fetch("http://localhost:3001/api/signup", {
@@ -71,6 +78,9 @@ const Signup = () => {
                     console.log(responseData); // handle success
                     navigate("/");
                 } else {
+                    const errorData = await response.json();
+                    setIsError(true);
+                    setErrorMessage(errorData.error);
                     console.error(`Error: ${response.status}`);
                 }
             } catch (e) {
@@ -81,7 +91,7 @@ const Signup = () => {
 
     return (
         <>
-          <Container maxWidth="xs">
+        <Container maxWidth="xs">
             <CssBaseline />
             <Box
               sx={{
@@ -134,6 +144,12 @@ const Signup = () => {
                         </Grid>
                     </Grid>
 
+                    {isError && (
+                        <Alert severity="error">
+                            {errorMessage}
+                        </Alert>
+                    )}
+
                     <Button
                       fullWidth
                       variant="contained"
@@ -150,7 +166,7 @@ const Signup = () => {
                     </Grid>
                 </Box>
             </Box>
-          </Container>
+        </Container>
         </>
     );
 };

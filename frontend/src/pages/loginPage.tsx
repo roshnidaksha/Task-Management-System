@@ -7,6 +7,7 @@ import {
   Container,
   CssBaseline,
   Box,
+  Alert,
   Avatar,
   Typography,
   TextField,
@@ -32,6 +33,8 @@ const Login = () => {
 
   const [isInvalidUsername, setIsInvalidUsername] = useState(false);
   const [isInvalidPassword, setIsInvalidPassword] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const checkInvalidUsername = () => {
     if (username.length < 1 || username.length > 30 || username.includes(" ")) {
@@ -54,11 +57,15 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    setIsError(false);
+    setErrorMessage("");
+
     const isInvalidUsername = checkInvalidUsername();
     const isInvalidPassword = checkInvalidPassword();
 
     if (isInvalidPassword || isInvalidUsername) {
-      console.error("Invalid username / password");
+      setIsError(true);
+      setErrorMessage("Invalid username / password");
     } else {
       try {
         const response = await fetch("http://localhost:3001/api/login", {
@@ -77,6 +84,9 @@ const Login = () => {
           auth.updatePassword(password);
           navigate("/");
         } else {
+          const errorData = await response.json();
+          setIsError(true);
+          setErrorMessage(errorData.error);
           console.error(`Error: ${response.status}`);
         }
       } catch (e) {
@@ -133,6 +143,12 @@ const Login = () => {
               error={isInvalidPassword}
               helperText={"Password must be at least 6 characters long"}
             />
+
+            {isError && (
+              <Alert severity="error">
+                {errorMessage}
+              </Alert>
+            )}
 
             <Button
               fullWidth
