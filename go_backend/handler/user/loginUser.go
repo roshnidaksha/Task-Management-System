@@ -40,16 +40,23 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	username := data.Username
 	password := data.Password
 
-	// Check for empty name or description
-	if (username == "" || password == "") {
-		utils.RespondWithError(w, http.StatusBadRequest, "name is required")
+	// Check if username and password given are valid
+	isValid, str := utils.IsValidPassword(password)
+	if (!isValid) {
+		utils.RespondWithError(w, http.StatusBadRequest, str)
+		return
+	}
+
+	isValid, str = utils.IsValidUsername(username)
+	if (!isValid) {
+		utils.RespondWithError(w, http.StatusBadRequest, str)
 		return
 	}
 
 	// Check if username exists
-	var result int
+	var cnt int
 	q := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE username = \"%s\"", usersTable, username)
-	err = db.QueryRow(q).Scan(&result)
+	err = db.QueryRow(q).Scan(&cnt)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			utils.RespondWithError(w, http.StatusBadRequest, "Internal Server Error: \n%v")
@@ -60,11 +67,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if (result == 0) {
+	if (cnt == 0) {
 		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username does not exist"))
 		return
-	}
-	else if (result > 1) {
+	} else if (cnt > 1) {
 		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Multiple username exists"))
 		return
 	}

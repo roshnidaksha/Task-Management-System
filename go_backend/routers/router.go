@@ -22,6 +22,9 @@ func SetupRouter() *mux.Router {
 	// Authentication
 	r.HandleFunc(BASE_PATH+"api/signup", user.SignupHandler).Methods("POST")
 	r.HandleFunc(BASE_PATH+"api/login", user.LoginHandler).Methods("POST")
+
+	// Update username/password
+	r.HandleFunc(BASE_PATH+"api/updateUserDetails", user.UpdateUserHandler).Methods("POST")
 	
 	// Handle GET requests to the '/api' route
 	r.HandleFunc(BASE_PATH+"api", func(w http.ResponseWriter, r *http.Request) {

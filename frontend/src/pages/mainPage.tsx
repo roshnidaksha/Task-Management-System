@@ -3,7 +3,7 @@ import '../App.css';
 import logo from '../logo.svg';
 import { useAuth } from "../contexts/AuthContext.tsx"
 
-const Home = () => {
+const HomePage = () => {
     const [data, setData] = React.useState(null);
     const auth = useAuth();
 
@@ -37,4 +37,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default HomePage;

@@ -14,7 +14,7 @@ import {
   Grid,
 } from "@mui/material";
 
-const Signup = () => {
+const SignupPage = () => {
     const navigate = useNavigate();
     
     const [username, setUsername] = useState("");
@@ -28,64 +28,34 @@ const Signup = () => {
         setPassword(event.target.value);
     };
 
-    const [isInvalidUsername, setIsInvalidUsername] = useState(false);
-    const [isInvalidPassword, setIsInvalidPassword] = useState(false);
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-
-    const checkInvalidUsername = () => {
-        if (username.length < 1 || username.length > 30 || username.includes(" ")) {
-            setIsInvalidUsername(true);
-            return true;
-        } else {
-            setIsInvalidUsername(false);
-            return false;
-        }
-    };
-
-    const checkInvalidPassword = () => {
-        if (password.length < 6 || password.includes(" ")) {
-            setIsInvalidPassword(true);
-            return true;
-        } else {
-            setIsInvalidPassword(false);
-            return false;
-        }
-    };
 
     const handleSignup = async () => {
         setIsError(false);
         setErrorMessage("");
 
-        const isInvalidUsername = checkInvalidUsername();
-        const isInvalidPassword = checkInvalidPassword();
-
-        if (isInvalidPassword || isInvalidUsername) {
-            setIsError(true);
-            setErrorMessage("Invalid username / password");
-        } else {
-            try {
-                const response = await fetch("http://localhost:3001/api/signup", {
-                    method: "POST",
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password }),
-                });
+        try {
+            const response = await fetch("http://localhost:3001/api/signup", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
             
-                if (response.ok) {
-                    const responseData = await response.json();
-                    console.log(responseData); // handle success
-                    navigate("/");
-                } else {
-                    const errorData = await response.json();
-                    setIsError(true);
-                    setErrorMessage(errorData.error);
-                    console.error(`Error: ${response.status}`);
-                }
-            } catch (e) {
-                console.error(e);
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData); // handle success
+                navigate("/");
+            } else {
+                const errorData = await response.json();
+                setIsError(true);
+                setErrorMessage(errorData.error);
+                console.error(`Error: ${response.status}`);
             }
+        } catch (e) {
+            console.error(e);
         }
     };
 
@@ -121,7 +91,6 @@ const Signup = () => {
                                 autoFocus
                                 value={username}
                                 onChange={handleUsernameChange}
-                                error={isInvalidUsername}
                                 helperText={"Username must be between 1 and 30 characters and cannot contain spaces"}
                             />
                         </Grid>
@@ -138,7 +107,6 @@ const Signup = () => {
                                 autoComplete="current-password"
                                 value={password}
                                 onChange={handlePasswordChange}
-                                error={isInvalidPassword}
                                 helperText={"Password must be at least 6 characters long"}
                             />
                         </Grid>
@@ -171,4 +139,4 @@ const Signup = () => {
     );
 };
 
-export default Signup;
+export default SignupPage;

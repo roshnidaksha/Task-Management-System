@@ -39,9 +39,16 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	username := data.Username
 	password := data.Password
 
-	// Check for empty name or description
-	if (username == "" || password == "") {
-		utils.RespondWithError(w, http.StatusBadRequest, "name is required")
+	// Check if username and password given are valid
+	isValid, str := utils.IsValidPassword(password)
+	if (!isValid) {
+		utils.RespondWithError(w, http.StatusBadRequest, str)
+		return
+	}
+
+	isValid, str = utils.IsValidUsername(username)
+	if (!isValid) {
+		utils.RespondWithError(w, http.StatusBadRequest, str)
 		return
 	}
 
@@ -59,13 +66,14 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if (result > 1) {
+	if (result >= 1) {
 		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username already exists"))
 		return
 	}
 
 	// Construct and execute SQL query to insert new user
-	query, err := db.Prepare("INSERT INTO user (username, password) VALUES (?, ?)")
+	stmt := fmt.Sprintf("INSERT INTO %s (username, password) VALUES (?, ?)", usersTable)
+	query, err := db.Prepare(stmt)
 	if err != nil {
 		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
 		return
