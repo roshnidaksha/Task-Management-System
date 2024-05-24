@@ -77,6 +77,17 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Check if new username already exists
+		cnt := utils.CountUsernames(new)
+		if (cnt == -1) {
+			utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
+			return
+		} else if (cnt >= 1) {
+			utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username already exists"))
+			return
+		}
+
+		// Update to new username
 		query := fmt.Sprintf("UPDATE %s SET username = \"%s\" WHERE username = \"%s\"", usersTable, new, username)
 		stmt, err := db.Prepare(query)
 		if err != nil {

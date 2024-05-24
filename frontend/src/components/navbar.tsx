@@ -29,6 +29,9 @@ const Navbar = () => {
         if (menuOption === "Profile") {
             navigate(`/profile/${userId}`)
         }
+        else if (menuOption === "Logout") {
+            handleLogout()
+        }
         setAnchorElUser(null);
     };
 

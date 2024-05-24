@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
@@ -53,20 +52,11 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if username exists
-	var result int
-	q := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE username = \"%s\"", usersTable, username)
-	err = db.QueryRow(q).Scan(&result)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			utils.RespondWithError(w, http.StatusBadRequest, "Internal Server Error: \n%v")
-			return
-		} else {
-			utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
-			return
-		}
-	}
-
-	if (result >= 1) {
+	cnt := utils.CountUsernames(username)
+	if (cnt == -1) {
+		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
+		return
+	} else if (cnt >= 1) {
 		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username already exists"))
 		return
 	}

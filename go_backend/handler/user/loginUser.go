@@ -54,20 +54,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if username exists
-	var cnt int
-	q := fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE username = \"%s\"", usersTable, username)
-	err = db.QueryRow(q).Scan(&cnt)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			utils.RespondWithError(w, http.StatusBadRequest, "Internal Server Error: \n%v")
-			return
-		} else {
-			utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
-			return
-		}
-	}
+	cnt := utils.CountUsernames(username)
 
-	if (cnt == 0) {
+	if (cnt == -1) {
+		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
+		return
+	} else if (cnt == 0) {
 		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username does not exist"))
 		return
 	} else if (cnt > 1) {

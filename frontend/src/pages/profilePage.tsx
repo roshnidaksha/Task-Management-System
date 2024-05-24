@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
     Box,
     Typography,
@@ -13,7 +12,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useAuth } from "../contexts/AuthContext.tsx"
 
 const ProfilePage = () => {
-    const navigate = useNavigate();
+
     const auth = useAuth();
     const [showForm, setShowForm] = useState(false);
     const [formType, setFormType] = useState("");
@@ -72,6 +71,10 @@ const ProfilePage = () => {
             console.error(e);
         }
     };
+
+    const handleDeleteUser = async() => {
+        
+    }
 
     return (
         <Box>
@@ -162,6 +165,26 @@ const ProfilePage = () => {
                         </Button>
                     </div>
                 )}
+
+            </Box>
+
+            <Box 
+                sx={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bgcolor: '#ff4845', 
+                    borderRadius: 2, 
+                    m: 1, 
+                    p: 1,    
+                }}
+            >
+                <Button color="inherit">
+                    <Typography component="div" onClick={handleDeleteUser}>
+                        Delete Account
+                    </Typography>
+                </Button>
 
             </Box>
         </Box>
