@@ -1,4 +1,16 @@
 CREATE TABLE IF NOT EXISTS user (
     username VARCHAR(64) PRIMARY KEY,
-    password TEXT NOT NULL
+    password VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Tasks (
+    ID INTEGER PRIMARY KEY,
+    Username VARCHAR(64),
+    Title VARCHAR(200),
+    Category VARCHAR(50) DEFAULT "Others",
+    Description VARCHAR(500),
+    Completed BOOLEAN,
+    Start_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    End_Date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (username) REFERENCES user(username)
 );

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"go_backend/handler/user"
+	"go_backend/handler/tasks"
 	"go_backend/database"
 	"go_backend/utils"
 	"encoding/json"
@@ -22,6 +23,9 @@ func SetupRouter() *mux.Router {
 	// Authentication
 	r.HandleFunc(BASE_PATH+"api/signup", user.SignupHandler).Methods("POST")
 	r.HandleFunc(BASE_PATH+"api/login", user.LoginHandler).Methods("POST")
+
+	// Tasks
+	r.HandleFunc(BASE_PATH+"api/{username}/retrieveTasks", tasks.GetTasksHandler).Methods("GET")
 
 	// Update username/password
 	r.HandleFunc(BASE_PATH+"api/updateUserDetails", user.UpdateUserHandler).Methods("POST")

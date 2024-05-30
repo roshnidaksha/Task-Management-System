@@ -32,6 +32,9 @@ const Navbar = () => {
         else if (menuOption === "Logout") {
             handleLogout()
         }
+        else if (menuOption === "Tasks") {
+            navigate("/tasks")
+        }
         setAnchorElUser(null);
     };
 
