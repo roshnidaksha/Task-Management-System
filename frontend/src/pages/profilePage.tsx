@@ -83,11 +83,12 @@ const ProfilePage = () => {
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: '#80d8ff', 
-                    borderRadius: 2, 
-                    m: 1, 
-                    p: 1,    
+                    p: { xs: 1, sm: 2 },  
+                    borderStyle: 'solid',
+                    borderColor: 'gray',
+                    borderWidth: 2,
+                    borderRadius: 3, 
+                    m: 1,   
                 }}
             >
                 <Typography variant='h4' sx={{ fontWeight: 700 }}>
@@ -102,15 +103,16 @@ const ProfilePage = () => {
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: '#80d8ff', 
-                    borderRadius: 2, 
-                    m: 1, 
-                    p: 1,    
+                    p: { xs: 1, sm: 2 },
+                    borderStyle: 'solid',
+                    borderColor: 'gray',
+                    borderWidth: 2,
+                    borderRadius: 3, 
+                    m: 1,   
                 }}
             >
                 <Typography variant='h6' sx={{ fontWeight: 700 }}>
-                    <p>Username: {auth.user}
+                    <p>Username: {auth.user}  
                     <Button color="inherit">
                         <Typography component="div" onClick={() => handleFormVisibility("username")} sx={{ ml: 2 }}>
                             Change Username?
@@ -173,15 +175,21 @@ const ProfilePage = () => {
                     display: 'flex', 
                     flexDirection: 'column', 
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: '#ff4845', 
-                    borderRadius: 2, 
+                    p: { xs: 1, sm: 2 },
+                    borderStyle: 'solid',
+                    borderColor: 'gray',
+                    borderWidth: 2,
+                    borderRadius: 3, 
                     m: 1, 
-                    p: 1,    
                 }}
             >
                 <Button color="inherit">
-                    <Typography component="div" onClick={handleDeleteUser}>
+                    <Typography 
+                        component="div" 
+                        onClick={handleDeleteUser}
+                        fontWeight='700'
+                        color='#ff4845'
+                    >
                         Delete Account
                     </Typography>
                 </Button>

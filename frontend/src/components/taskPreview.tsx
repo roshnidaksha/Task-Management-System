@@ -36,7 +36,7 @@ const TaskPreview = (t: Readonly<Tasks>) => {
     return (
         <Box
             sx={{
-                p: { xs: 0, sm: 2 },
+                p: { xs: 1, sm: 2 },
                 width: '100%',
                 borderStyle: 'solid',
                 borderColor: 'gray',
