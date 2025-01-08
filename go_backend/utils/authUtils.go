@@ -1,26 +1,26 @@
 package utils
 
 import (
-	"strings"
-	"os"
-	"log"
 	"fmt"
+	"log"
+	"os"
+	"strings"
 
 	"go_backend/database"
 
-	"github.com/joho/godotenv"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 // Checks if username given by the user is valid
 func IsValidUsername(username string) (bool, string) {
-	if (username == "") {
+	if username == "" {
 		return false, "Username is required"
 	}
-	if (len(username) > 30) {
+	if len(username) > 30 {
 		return false, "Username is too long"
 	}
-	if (strings.Contains(username, " ")) {
+	if strings.Contains(username, " ") {
 		return false, "Username cannot contain spaces"
 	}
 	return true, "Valid Username"
@@ -28,19 +28,19 @@ func IsValidUsername(username string) (bool, string) {
 
 // Checks if password given by the user is valid
 func IsValidPassword(password string) (bool, string) {
-	if (len(password) < 6) {
+	if len(password) < 6 {
 		return false, "Password is too short"
 	}
-	if (strings.Contains(password, " ")) {
+	if strings.Contains(password, " ") {
 		return false, "Password cannot contain spaces"
 	}
 	return true, "Valid Password"
 }
 
 // Count number of usernames present in database
-func CountUsernames(username string) (int) {
+func CountUsernames(username string) int {
 	// Connect to Database
-	var db = database.GetDB();
+	var db = database.GetDB()
 	godotenv.Load(".env")
 	usersTable := os.Getenv("DB_USERS_TABLE")
 	if usersTable == "" {

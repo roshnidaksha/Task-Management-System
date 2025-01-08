@@ -16,109 +16,109 @@ const settings = ['Profile', 'Dashboard', 'Tasks', 'Timeline', 'Calender', 'Logo
 
 // Navbar component to be displayed at the top at all times
 const Navbar = () => {
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const navigate = useNavigate();
-    const auth = useAuth();
-    const userId = auth.user;
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
+  const auth = useAuth();
+  const userId = auth.user;
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-    const handleCloseUserMenu = (menuOption) => {
-        if (menuOption === "Profile") {
-            navigate(`/profile/${userId}`)
-        }
-        else if (menuOption === "Logout") {
-            handleLogout()
-        }
-        else if (menuOption === "Tasks") {
-            navigate("/tasks")
-        }
-        setAnchorElUser(null);
-    };
-
-    const handleLogout = async () => {
-        auth.logout();
-        navigate("/");
-    };
-
-    function handleLogin() {
-        navigate("/login");
+  const handleCloseUserMenu = (menuOption) => {
+    if (menuOption === "Profile") {
+      navigate(`/profile/${userId}`)
     }
-
-    function handleSignup() {
-        navigate("/signup");
+    else if (menuOption === "Logout") {
+      handleLogout()
     }
+    else if (menuOption === "Tasks") {
+      navigate("/tasks")
+    }
+    setAnchorElUser(null);
+  };
 
-    return (
-        <AppBar position="static">
-            <Toolbar>
-                <Box sx={{ flexGrow: 1 }}>
-                    <Button component={Link} to={"/"} color="inherit">
-                        <Typography sx={{ mr: 2, fontWeight: 700 }}>
-                            Innovation Hub
-                        </Typography>
-                    </Button>
-                </Box>
+  const handleLogout = async () => {
+    auth.logout();
+    navigate("/");
+  };
 
-                {!auth.isLogin && (
-                <Box sx = {{ display: 'flex', flexGrow: 0 }}>
-                    <Button color="inherit" onClick={handleSignup} sx={{ mr: 2 }}>
-                        <Typography component="div">
-                            Sign Up
-                        </Typography>
-                    </Button>
-                    <Button color="inherit" onClick={handleLogin} sx={{ mr: 2 }}>
-                        <Typography component="div">
-                            Login
-                        </Typography>
-                    </Button>
-                </Box>
-                )}
+  function handleLogin() {
+    navigate("/login");
+  }
 
-                {auth.isLogin && (
-                <Button color="inherit" onClick={handleLogout} sx={{ mr: 2 }}>
-                    <Typography component="div">
-                        Logout
-                    </Typography>
-                </Button>
-                )}
+  function handleSignup() {
+    navigate("/signup");
+  }
 
-                {auth.isLogin && (
-                <Box sx = {{ display: 'flex', flexGrow: 0 }}>
-                    <Typography sx={{ mr: 2 }}>
-                        Welcome {auth.user}
-                    </Typography>
-                    <Tooltip title="Open settings">
-                        <IconButton onClick={handleOpenUserMenu} sx={{ mr: 2, p: 0 }}>
-                            <AccountCircle />
-                        </IconButton>
-                    </Tooltip>
-                    <Menu
-                        sx={{ mt: '45px' }}
-                        id="menu-navbar"
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        keepMounted
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                    >
-                        {settings.map((setting) => (
-                            <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-                                <Typography textAlign="center">
-                                    {setting}
-                                </Typography>
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                </Box>
-                )}
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Box sx={{ flexGrow: 1 }}>
+          <Button component={Link} to={"/"} color="inherit">
+            <Typography sx={{ mr: 2, fontWeight: 700 }}>
+              Innovation Hub
+            </Typography>
+          </Button>
+        </Box>
 
-            </Toolbar>
-        </AppBar>
-    );
+        {!auth.isLogin && (
+          <Box sx={{ display: 'flex', flexGrow: 0 }}>
+            <Button color="inherit" onClick={handleSignup} sx={{ mr: 2 }}>
+              <Typography component="div">
+                Sign Up
+              </Typography>
+            </Button>
+            <Button color="inherit" onClick={handleLogin} sx={{ mr: 2 }}>
+              <Typography component="div">
+                Login
+              </Typography>
+            </Button>
+          </Box>
+        )}
+
+        {auth.isLogin && (
+          <Button color="inherit" onClick={handleLogout} sx={{ mr: 2 }}>
+            <Typography component="div">
+              Logout
+            </Typography>
+          </Button>
+        )}
+
+        {auth.isLogin && (
+          <Box sx={{ display: 'flex', flexGrow: 0 }}>
+            <Typography sx={{ mr: 2 }}>
+              Welcome {auth.user}
+            </Typography>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ mr: 2, p: 0 }}>
+                <AccountCircle />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-navbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              keepMounted
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                  <Typography textAlign="center">
+                    {setting}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        )}
+
+      </Toolbar>
+    </AppBar>
+  );
 }
 
 export default Navbar;

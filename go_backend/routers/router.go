@@ -1,14 +1,15 @@
 package router
 
 import (
-	"github.com/gorilla/mux"
-	"fmt"
-	"net/http"
-	"go_backend/handler/user"
-	"go_backend/handler/tasks"
-	"go_backend/database"
-	"go_backend/utils"
 	"encoding/json"
+	"fmt"
+	"go_backend/database"
+	"go_backend/handler/tasks"
+	"go_backend/handler/user"
+	"go_backend/utils"
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 var BASE_PATH = "/"
@@ -16,7 +17,7 @@ var BASE_PATH = "/"
 // SetupRouter Sets up the router for the server
 func SetupRouter() *mux.Router {
 	var db = database.GetDB()
-	
+
 	r := mux.NewRouter()
 
 	// Routes
@@ -25,12 +26,13 @@ func SetupRouter() *mux.Router {
 	r.HandleFunc(BASE_PATH+"api/login", user.LoginHandler).Methods("POST")
 
 	// Tasks
+	r.HandleFunc("/api/createTask", tasks.CreateTaskHandler).Methods("POST")
 	r.HandleFunc(BASE_PATH+"api/retrieveTasks", tasks.GetTasksHandler).Methods("GET")
 	r.HandleFunc(BASE_PATH+"api/retrieveCategories", tasks.GetCategoriesHandler).Methods("GET")
 
 	// Update username/password
 	r.HandleFunc(BASE_PATH+"api/updateUserDetails", user.UpdateUserHandler).Methods("POST")
-	
+
 	// Handle GET requests to the '/api' route
 	r.HandleFunc(BASE_PATH+"api", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

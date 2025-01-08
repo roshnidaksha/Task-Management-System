@@ -1,13 +1,13 @@
 package user
 
 import (
-	"encoding/json"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
-	"log"
-	
+
 	"go_backend/database"
 	"go_backend/utils"
 
@@ -16,14 +16,14 @@ import (
 )
 
 type UpdateRequestData struct {
-	New string `json:"new"`
+	New      string `json:"new"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
 func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Only POST
-	var db = database.GetDB();
+	var db = database.GetDB()
 	var err error
 
 	w.Header().Set("Content-Type", "application/json")
@@ -42,7 +42,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		utils.RespondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	
+
 	new := data.New
 	username := data.Username
 	password := data.Password
@@ -61,29 +61,29 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if (result >= 1) {
-		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username already exists"))
+	if result >= 1 {
+		utils.RespondWithError(w, http.StatusBadRequest, "Username already exists")
 		return
 	}
 
 	// Case 1: Update Username: Only password is empty
 	// username contains old username and new contains the new username to be updated
-	if (password == "") {
+	if password == "" {
 
 		// Check if new username given is valid
 		isValid, str := utils.IsValidUsername(new)
-		if (!isValid) {
+		if !isValid {
 			utils.RespondWithError(w, http.StatusBadRequest, str)
 			return
 		}
 
 		// Check if new username already exists
 		cnt := utils.CountUsernames(new)
-		if (cnt == -1) {
+		if cnt == -1 {
 			utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
 			return
-		} else if (cnt >= 1) {
-			utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username already exists"))
+		} else if cnt >= 1 {
+			utils.RespondWithError(w, http.StatusBadRequest, "Username already exists")
 			return
 		}
 
@@ -107,11 +107,11 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Case 2: Update Password: password is not empty
 	// new contains the new password of the user username
-	if (password != "") {
+	if password != "" {
 
 		// Check if new password given is valid
 		isValid, str := utils.IsValidPassword(new)
-		if (!isValid) {
+		if !isValid {
 			utils.RespondWithError(w, http.StatusBadRequest, str)
 			return
 		}

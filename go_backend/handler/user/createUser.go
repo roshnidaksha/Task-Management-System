@@ -3,12 +3,12 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"go_backend/database"
+	"go_backend/models"
+	"go_backend/utils"
+	"log"
 	"net/http"
 	"os"
-	"log"
-	"go_backend/models"
-	"go_backend/database"
-	"go_backend/utils"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -16,7 +16,7 @@ import (
 
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	// Only POST
-	var db = database.GetDB();
+	var db = database.GetDB()
 
 	w.Header().Set("Content-Type", "application/json")
 
@@ -40,24 +40,24 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Check if username and password given are valid
 	isValid, str := utils.IsValidPassword(password)
-	if (!isValid) {
+	if !isValid {
 		utils.RespondWithError(w, http.StatusBadRequest, str)
 		return
 	}
 
 	isValid, str = utils.IsValidUsername(username)
-	if (!isValid) {
+	if !isValid {
 		utils.RespondWithError(w, http.StatusBadRequest, str)
 		return
 	}
 
 	// Check if username exists
 	cnt := utils.CountUsernames(username)
-	if (cnt == -1) {
+	if cnt == -1 {
 		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
 		return
-	} else if (cnt >= 1) {
-		utils.RespondWithError(w, http.StatusBadRequest, fmt.Sprintf("Username already exists"))
+	} else if cnt >= 1 {
+		utils.RespondWithError(w, http.StatusBadRequest, "Username already exists")
 		return
 	}
 
