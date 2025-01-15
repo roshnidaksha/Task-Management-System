@@ -26,7 +26,8 @@ func SetupRouter() *mux.Router {
 	r.HandleFunc(BASE_PATH+"api/login", user.LoginHandler).Methods("POST")
 
 	// Tasks
-	r.HandleFunc("/api/createTask", tasks.CreateTaskHandler).Methods("POST")
+	r.HandleFunc(BASE_PATH+"api/createTask", tasks.CreateTaskHandler).Methods("POST")
+	r.HandleFunc(BASE_PATH+"api/toggleStatus/{taskId}", tasks.ToggleTaskStatus).Methods("POST")
 	r.HandleFunc(BASE_PATH+"api/retrieveTasks", tasks.GetTasksHandler).Methods("GET")
 	r.HandleFunc(BASE_PATH+"api/retrieveCategories", tasks.GetCategoriesHandler).Methods("GET")
 

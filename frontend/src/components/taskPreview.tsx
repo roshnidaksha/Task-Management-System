@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Divider,
@@ -7,9 +7,8 @@ import {
   Stack,
 } from "@mui/material";
 import { AccessTime, CalendarToday, Flag } from "@mui/icons-material";
-import Tasks from "../models/Tasks.tsx"
 
-const TaskPreview = (t: Readonly<Tasks>) => {
+const TaskPreview = ({t, onStatusToggle}) => {
   const formatDate = (date: string) => {
     if (!date) {
       return { date: '', time: '' }; // Return empty strings or handle as needed
@@ -110,7 +109,11 @@ const TaskPreview = (t: Readonly<Tasks>) => {
         <Chip
           label={t.completed === 1 ? "Done" : "Not Done"}
           color={t.completed === 1 ? "success" : "warning"}
+          onClick={() => onStatusToggle(t.id, t.completed)}
           size="small"
+          sx={{
+            cursor: "pointer",
+          }}
         />
       </Stack>
     </Box>

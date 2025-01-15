@@ -14,6 +14,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
@@ -132,4 +133,51 @@ func CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.RespondWithJSON(w, http.StatusCreated, struct{ Message string }{"Task created successfully"})
+}
+
+func ToggleTaskStatus(w http.ResponseWriter, r *http.Request) {
+	// Only POST method is allowed
+	if r.Method != http.MethodPost {
+		utils.RespondWithError(w, http.StatusMethodNotAllowed, "Invalid request method")
+		return
+	}
+
+	var db = database.GetDB()
+	w.Header().Set("Content-Type", "application/json")
+	godotenv.Load(".env")
+	tasksTable := os.Getenv("DB_TASKS_TABLE")
+	if tasksTable == "" {
+		log.Fatal("tasksTable is not set in the environment")
+	}
+
+	vars := mux.Vars(r)
+	taskId := vars["taskId"]
+
+	var requestBody map[string]interface{}
+	err := json.NewDecoder(r.Body).Decode(&requestBody)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusBadRequest, "Unable to decode JSON")
+		return
+	}
+	completed, ok := requestBody["completed"].(float64) // JSON numbers are decoded as float64
+	if !ok {
+		utils.RespondWithError(w, http.StatusBadRequest, "Invalid 'completed' value")
+		return
+	}
+	completedStatus := int(completed)
+
+	query := fmt.Sprintf("UPDATE %s SET Completed = %d WHERE id = \"%s\"", tasksTable, completedStatus, taskId)
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
+		return
+	}
+	_, err = stmt.Exec()
+	if err != nil {
+		utils.RespondWithError(w, http.StatusInternalServerError, fmt.Sprintf("Internal Server Error: \n%v", err))
+		return
+	}
+
+	// Respond with success message
+	utils.RespondWithJSON(w, http.StatusCreated, struct{ Message string }{"Username updated successfully"})
 }

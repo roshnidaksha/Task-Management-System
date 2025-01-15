@@ -160,6 +160,35 @@ const TasksPage = () => {
     }
   };
 
+  const handleToggleStatus = async (taskId, currentStatus) => {
+    const newStatus = currentStatus === 1 ? 0 : 1;
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/toggleStatus/${taskId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed: newStatus }),
+      });
+
+      if (response.ok) {
+        const successMessage = await response.json();
+        console.log("Completion Status toggled successfully:", successMessage.message);
+        fetchCategories();
+      } else {
+        const errorData = await response.json();
+        setIsError(true);
+        setErrorMessage(errorData.error);
+        console.error(`Error: ${response.status}`);
+      }
+    } catch (error) {
+      setIsError(true);
+      setErrorMessage("Error Updating Status");
+      console.error(error);
+    }
+  };
+
   // Fetch all tasks grouped by categories
   useEffect(() => {
     const fetchAllTasks = async () => {
@@ -306,68 +335,72 @@ const TasksPage = () => {
                       },
                     }}
                   >
-                    <TaskPreview {...task} />
+                    <TaskPreview
+                      key={task.id}
+                      t={task}
+                      onStatusToggle={handleToggleStatus}
+                    />
                   </ListItem>
                 ))}
               </Stack>
             </Grid>
           ))}
-
-          {/* Dialog for Adding a New Task */}
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add New Task</DialogTitle>
-            <DialogContent>
-              <TextField
-                margin="normal"
-                label="Task Title"
-                name="title"
-                fullWidth
-                value={newTask.title}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="normal"
-                label="Description"
-                name="description"
-                fullWidth
-                multiline
-                rows={3}
-                value={newTask.description}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="normal"
-                label="Start Date"
-                name="startDate"
-                type="datetime-local"
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                value={newTask.startDate}
-                onChange={handleChange}
-              />
-              <TextField
-                margin="normal"
-                label="End Date"
-                name="endDate"
-                type="datetime-local"
-                fullWidth
-                InputLabelProps={{ shrink: true }}
-                value={newTask.endDate}
-                onChange={handleChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose} color="secondary">
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit} variant="contained" color="primary">
-                Add Task
-              </Button>
-            </DialogActions>
-          </Dialog>
-
         </Grid>
       )}
+
+      {/* Dialog for Adding a New Task */}
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Add New Task</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="normal"
+            label="Task Title"
+            name="title"
+            fullWidth
+            value={newTask.title}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            label="Description"
+            name="description"
+            fullWidth
+            multiline
+            rows={3}
+            value={newTask.description}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            label="Start Date"
+            name="startDate"
+            type="datetime-local"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={newTask.startDate}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            label="End Date"
+            name="endDate"
+            type="datetime-local"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            value={newTask.endDate}
+            onChange={handleChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} variant="contained" color="primary">
+            Add Task
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 }

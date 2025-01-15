@@ -6,7 +6,7 @@ type Tasks struct {
 	Title       string `json:"title"`
 	Category    string `json:"category"`
 	Description string `json:"description"`
-	Completed   bool   `json:"completed"`
+	Completed   int    `json:"completed"`
 	StartDate   string `json:"startDate"`
 	EndDate     string `json:"endDate"`
 }
