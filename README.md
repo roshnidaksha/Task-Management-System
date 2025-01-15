@@ -49,6 +49,20 @@ cd backend
 go mod tidy
 ```
 
+**MySQL Connection Setup**
+
+Create a .env file in the root of the backend directory to configure the MySQL database connection. The .env file should contain the following variables:
+
+```bash
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=your_mysql_user
+DB_PASSWORD=your_mysql_password
+DB_NAME=your_database_name
+DB_USERS_TABLE=user
+DB_TASKS_TABLE=tasks
+```
+
 Start the Go backend server
 
 ```bash
