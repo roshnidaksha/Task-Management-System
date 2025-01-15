@@ -218,19 +218,21 @@ const TasksPage = () => {
           boxShadow: 3,
         }}
       >
-        <Typography
-          variant="h5"
+        <TextField
+          variant="outlined"
+          size="small"
+          placeholder="Enter category name"
+          value={currentCategory}
+          onChange={(e) => setCurrentCategory(e.target.value)}
           sx={{
-            fontWeight: "700",
-            color: "white",
-            textShadow: "0px 1px 2px rgba(0,0,0,0.5)",
-            textOverflow: "ellipsis",
+            backgroundColor: "white",
+            borderRadius: 1,
+            flexGrow: 1,
           }}
-        >
-          Add new category
-        </Typography>
-        <IconButton
-          onClick={() => handleOpen(null)}
+        />
+        <Button
+          onClick={() => handleOpen(currentCategory)}
+          variant="contained"
           sx={{
             color: "white",
             backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -239,7 +241,7 @@ const TasksPage = () => {
             },
           }}>
           <AddIcon />
-        </IconButton>
+        </Button>
       </Box>
 
       {/* Task Categories */}
