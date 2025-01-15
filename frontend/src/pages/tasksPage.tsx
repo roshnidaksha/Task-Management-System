@@ -6,7 +6,6 @@ import {
   Card,
   Typography,
   Stack,
-  List,
   ListItem,
   IconButton,
   Dialog,
@@ -15,6 +14,7 @@ import {
   DialogTitle,
   TextField,
   Button,
+  Grid,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useAuth } from "../contexts/AuthContext.tsx"
@@ -142,7 +142,7 @@ const TasksPage = () => {
         },
         body: JSON.stringify(task),
       });
-  
+
       if (response.ok) {
         const successMessage = await response.json();
         console.log(successMessage.message);
@@ -162,8 +162,8 @@ const TasksPage = () => {
 
   // Fetch all tasks grouped by categories
   useEffect(() => {
-    if (categories.length === 0) return;
     const fetchAllTasks = async () => {
+      if (!categories || categories.length === 0) return;
       try {
         const results = await Promise.all(categories.map(category =>
           fetchTasksByCategory(auth.user, category)
@@ -200,17 +200,57 @@ const TasksPage = () => {
       )}
 
       {/* No Tasks Found */}
-      {!isError && categories.length === 0 && (
+      {!isError && (!categories || (Array.isArray(categories) && categories.length === 0)) && (
         <Alert severity="error" sx={{ mb: 2 }}>
           No tasks found
         </Alert>
       )}
 
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          justifyContent: "center",
+          p: 2,
+          m: 2,
+          backgroundImage: "linear-gradient(90deg,rgb(5, 130, 189),rgb(144, 192, 216))",
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: "700",
+            color: "white",
+            textShadow: "0px 1px 2px rgba(0,0,0,0.5)",
+            textOverflow: "ellipsis",
+          }}
+        >
+          Add new category
+        </Typography>
+        <IconButton
+          onClick={() => handleOpen(null)}
+          sx={{
+            color: "white",
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+            },
+          }}>
+          <AddIcon />
+        </IconButton>
+      </Box>
+
       {/* Task Categories */}
-      {!isError && categories.length > 0 && (
-        <List sx={{ bgcolor: "background.paper" }}>
+      {!isError && (categories && Array.isArray(categories) && categories.length > 0) && (
+        <Grid container spacing={6} sx={{ marginTop: 2 }}>
           {categories.map((category) => (
-            <ListItem key={category} sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
+            <Grid item
+              xs={12}
+              sm={6}
+              md={4}
+            >
               {/* Category Header */}
               <Card
                 sx={{
@@ -268,7 +308,7 @@ const TasksPage = () => {
                   </ListItem>
                 ))}
               </Stack>
-            </ListItem>
+            </Grid>
           ))}
 
           {/* Dialog for Adding a New Task */}
@@ -324,7 +364,7 @@ const TasksPage = () => {
             </DialogActions>
           </Dialog>
 
-        </List>
+        </Grid>
       )}
     </Box>
   );
