@@ -45,7 +45,7 @@ The React app should now be running on http://localhost:3000.
 Install dependencies
 
 ```bash
-cd backend
+cd go_backend
 go mod tidy
 ```
 
