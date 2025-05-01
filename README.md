@@ -1,5 +1,5 @@
 # Task Management System
-A simple task management system where users can add tasks and categorise them based on custome categories.
+A simple task management system where users can add tasks and categorise them based on custom categories.
 
 ## Features
 
