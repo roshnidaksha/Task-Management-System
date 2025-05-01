@@ -75,6 +75,9 @@ const TasksPage = () => {
   });
 
   const handleOpenAddNewTask = (category) => {
+    if (!category.trim()) {
+      return;
+    }
     setCurrentCategory(category);
     setNewTask({ ...newTask, category });
     setOpen(true);
