@@ -81,7 +81,7 @@ const TasksPage = () => {
     title: "",
     category: "",
     description: "",
-    completed: false,
+    completed: 0,
     startDate: "",
     endDate: "",
   });
@@ -104,7 +104,7 @@ const TasksPage = () => {
       title: "",
       category,
       description: "",
-      completed: false,
+      completed: 0,
       startDate: start,
       endDate: end,
     });
@@ -117,7 +117,7 @@ const TasksPage = () => {
       title: "",
       category: "",
       description: "",
-      completed: false,
+      completed: 0,
       startDate: "",
       endDate: "",
     });
