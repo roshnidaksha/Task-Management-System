@@ -85,7 +85,8 @@ const TaskPreview = ({t, onStatusToggle}) => {
             color: "text.primary",
           }}
         >
-          {startDate} {startTime} - {endDate} {endTime}
+          Start: {startDate} {startTime} <br />
+          End: {endDate} {endTime}
         </Typography>
       </Stack>
 
