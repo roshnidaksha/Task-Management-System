@@ -142,6 +142,13 @@ const TasksPage = () => {
       return;
     }
 
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (start >= end) {
+      setFieldErrors((prev) => ({ ...prev, endDate: true }));
+      return;
+    }
+
     const task = {
       id: "10",
       username: auth.user,
@@ -460,7 +467,11 @@ const TasksPage = () => {
             value={newTask.endDate}
             onChange={handleChange}
             error={fieldErrors.endDate}
-            helperText={fieldErrors.endDate ? "End date is required." : ""}
+            helperText={fieldErrors.endDate ?
+              newTask.endDate ?
+                "End date must be after start date."
+                : "End date is required."
+              : ""}
           />
         </DialogContent>
         <DialogActions>
