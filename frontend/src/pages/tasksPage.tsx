@@ -47,6 +47,26 @@ const fetchTasksByCategory = async (username: string, category: string) => {
   }
 };
 
+const getDateTimeDefaults = () => {
+  const now = new Date();
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+
+  const format = (date: Date) => {
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  return {
+    start: format(now),
+    end: format(oneHourLater),
+  };
+};
+
 const TasksPage = () => {
   const auth = useAuth();
 
@@ -79,7 +99,15 @@ const TasksPage = () => {
       return;
     }
     setCurrentCategory(category);
-    setNewTask({ ...newTask, category });
+    const { start, end } = getDateTimeDefaults();
+    setNewTask({
+      title: "",
+      category,
+      description: "",
+      completed: false,
+      startDate: start,
+      endDate: end,
+    });
     setOpen(true);
   };
 
@@ -111,6 +139,13 @@ const TasksPage = () => {
 
     setFieldErrors(errors);
     if (Object.values(errors).some((error) => error)) {
+      return;
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (start >= end) {
+      setFieldErrors((prev) => ({ ...prev, endDate: true }));
       return;
     }
 
@@ -432,7 +467,11 @@ const TasksPage = () => {
             value={newTask.endDate}
             onChange={handleChange}
             error={fieldErrors.endDate}
-            helperText={fieldErrors.endDate ? "End date is required." : ""}
+            helperText={fieldErrors.endDate ?
+              newTask.endDate ?
+                "End date must be after start date."
+                : "End date is required."
+              : ""}
           />
         </DialogContent>
         <DialogActions>
