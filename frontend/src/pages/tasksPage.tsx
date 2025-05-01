@@ -67,13 +67,20 @@ const TasksPage = () => {
   });
   const [currentCategory, setCurrentCategory] = useState("");
 
-  const handleOpen = (category) => {
+  const [fieldErrors, setFieldErrors] = useState({
+    title: false,
+    description: false,
+    startDate: false,
+    endDate: false,
+  });
+
+  const handleOpenAddNewTask = (category) => {
     setCurrentCategory(category);
     setNewTask({ ...newTask, category });
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleCloseAddNewTask = () => {
     setOpen(false);
     setNewTask({
       title: "",
@@ -91,6 +98,19 @@ const TasksPage = () => {
   };
 
   const handleSubmit = () => {
+    const { title, description, startDate, endDate } = newTask;
+    const errors = {
+      title: !title.trim(),
+      description: !description.trim(),
+      startDate: !startDate,
+      endDate: !endDate,
+    };
+
+    setFieldErrors(errors);
+    if (Object.values(errors).some((error) => error)) {
+      return;
+    }
+
     const task = {
       id: "10",
       username: auth.user,
@@ -100,8 +120,17 @@ const TasksPage = () => {
     };
     console.log(task);
     createTask(task);
-    handleClose();
+    handleCloseAddNewTask();
   };
+
+  useEffect(() => {
+    setFieldErrors({
+      title: !newTask.title.trim(),
+      description: !newTask.description.trim(),
+      startDate: !newTask.startDate,
+      endDate: !newTask.endDate,
+    });
+  }, [newTask.title, newTask.description, newTask.startDate, newTask.endDate]);
 
   const fetchCategories = async () => {
     try {
@@ -260,7 +289,7 @@ const TasksPage = () => {
           }}
         />
         <Button
-          onClick={() => handleOpen(currentCategory)}
+          onClick={() => handleOpenAddNewTask(currentCategory)}
           variant="contained"
           sx={{
             color: "white",
@@ -305,7 +334,7 @@ const TasksPage = () => {
                     {category}
                   </Typography>
                   <IconButton
-                    onClick={() => handleOpen(category)}
+                    onClick={() => handleOpenAddNewTask(category)}
                     sx={{
                       color: "white",
                       backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -349,18 +378,22 @@ const TasksPage = () => {
       )}
 
       {/* Dialog for Adding a New Task */}
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleCloseAddNewTask}>
         <DialogTitle>Add New Task</DialogTitle>
         <DialogContent>
           <TextField
+            required
             margin="normal"
             label="Task Title"
             name="title"
             fullWidth
             value={newTask.title}
             onChange={handleChange}
+            error={fieldErrors.title}
+            helperText={fieldErrors.title ? "Title is required." : ""}
           />
           <TextField
+            required
             margin="normal"
             label="Description"
             name="description"
@@ -369,8 +402,11 @@ const TasksPage = () => {
             rows={3}
             value={newTask.description}
             onChange={handleChange}
+            error={fieldErrors.description}
+            helperText={fieldErrors.description ? "Description is required." : ""}
           />
           <TextField
+            required
             margin="normal"
             label="Start Date"
             name="startDate"
@@ -379,8 +415,11 @@ const TasksPage = () => {
             InputLabelProps={{ shrink: true }}
             value={newTask.startDate}
             onChange={handleChange}
+            error={fieldErrors.startDate}
+            helperText={fieldErrors.startDate ? "Start date is required." : ""}
           />
           <TextField
+            required
             margin="normal"
             label="End Date"
             name="endDate"
@@ -389,10 +428,12 @@ const TasksPage = () => {
             InputLabelProps={{ shrink: true }}
             value={newTask.endDate}
             onChange={handleChange}
+            error={fieldErrors.endDate}
+            helperText={fieldErrors.endDate ? "End date is required." : ""}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">
+          <Button onClick={handleCloseAddNewTask} color="secondary">
             Cancel
           </Button>
           <Button onClick={handleSubmit} variant="contained" color="primary">
