@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -200,7 +199,7 @@ const TasksPage = () => {
     fetchCategories();
   }, [auth.user]);
 
-  const createTask = async (task) => {
+  const createTask = async (task: { startDate: string; endDate: string; title: string; category: string; description: string; completed: number; id: string; username: string; }) => {
     try {
       const response = await fetch(`http://localhost:3001/api/createTask`, {
         method: "POST",
@@ -227,7 +226,7 @@ const TasksPage = () => {
     }
   };
 
-  const handleToggleStatus = async (taskId, currentStatus) => {
+  const handleToggleStatus = async (taskId: any, currentStatus: number) => {
     const newStatus = currentStatus === 1 ? 0 : 1;
 
     try {
@@ -252,6 +251,33 @@ const TasksPage = () => {
     } catch (error) {
       setIsError(true);
       setErrorMessage("Error Updating Status");
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (taskId: any) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/deleteTask/${taskId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: taskId }),
+      });
+
+      if (response.ok) {
+        const successMessage = await response.json();
+        console.log("Task deleted successfully:", successMessage.message);
+        fetchCategories();
+      } else {
+        const errorData = await response.json();
+        setIsError(true);
+        setErrorMessage(errorData.error);
+        console.error(`Error: ${response.status}`);
+      }
+    } catch (error) {
+      setIsError(true);
+      setErrorMessage("Error Deleting Task");
       console.error(error);
     }
   };
@@ -406,6 +432,7 @@ const TasksPage = () => {
                       key={task.id}
                       t={task}
                       onStatusToggle={handleToggleStatus}
+                      onDelete={handleDelete}
                     />
                   </ListItem>
                 ))}

@@ -5,10 +5,19 @@ import {
   Typography,
   Chip,
   Stack,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
 } from "@mui/material";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { AccessTime, CalendarToday, Flag } from "@mui/icons-material";
 
-const TaskPreview = ({t, onStatusToggle}) => {
+const TaskPreview = ({ t, onStatusToggle, onDelete }) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const formatDate = (date: string) => {
     if (!date) {
       return { date: '', time: '' }; // Return empty strings or handle as needed
@@ -35,6 +44,19 @@ const TaskPreview = ({t, onStatusToggle}) => {
     high: "error.main",
   };
 
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    onDelete(t.id);
+    setDeleteDialogOpen(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+  };
+
   return (
     <Box
       sx={{
@@ -48,18 +70,36 @@ const TaskPreview = ({t, onStatusToggle}) => {
         backgroundColor: "background.paper",
       }}
     >
-      {/* Task Title */}
-      <Typography
-        sx={{
-          fontSize: { xs: "1.25rem", sm: "1.5rem" },
-          fontWeight: "700",
-          textOverflow: "ellipsis",
-          overflow: "hidden",
-          color: "primary.main",
-        }}
-      >
-        {t.title}
-      </Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        {/* Task Title */}
+        <Typography
+          sx={{
+            fontSize: { xs: "1.25rem", sm: "1.5rem" },
+            fontWeight: "700",
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            color: "primary.main",
+            flex: 1,
+            mr: 2,
+          }}
+        >
+          {t.title}
+        </Typography>
+
+        {/* Delete Icon */}
+        <DeleteForeverIcon
+          sx={{
+            fontSize: { xs: "1.5rem", sm: "2rem" },
+            cursor: "pointer",
+            color: "error.main",
+            flexShrink: 0,
+          }}
+          aria-label="Delete Task"
+          onClick={handleDeleteClick}
+        />
+      </Stack>
+
+      {/* Task Time */}
 
       <Divider sx={{ my: 2 }} />
 
@@ -117,6 +157,31 @@ const TaskPreview = ({t, onStatusToggle}) => {
           }}
         />
       </Stack>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          Confirm Delete
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete the task "{t.title}"? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 };
