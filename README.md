@@ -5,6 +5,7 @@ A simple task management system where users can add tasks and categorise them ba
 
 - View a list of tasks grouped by categories
 - Add new tasks or categories
+- Delete individual tasks
 - Toggle the completion status of tasks.
 
 ## Tech Stack
